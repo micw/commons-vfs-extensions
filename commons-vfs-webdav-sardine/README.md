@@ -26,5 +26,5 @@ Or configure it programmatically:
 
 Use it:
 
-	String url="webdavs://"+URLEncoder.encode(siteLogin)+"x:"+URLEncoder.encode(sitePasswd)+"@"+siteHost+resourcePath;
+	String url="webdavs://"+URLEncoder.encode(siteLogin)+":"+URLEncoder.encode(sitePasswd)+"@"+siteHost+resourcePath;
 	FileObject fo=fsManager.resolveFile(url);
