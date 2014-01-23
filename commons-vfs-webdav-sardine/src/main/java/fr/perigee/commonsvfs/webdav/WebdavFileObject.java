@@ -151,6 +151,19 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 		return destFile.getURL().equals(getURL());
 	}
 	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	protected Map<String, Object> doGetAttributes() throws Exception {
+		List<DavResource> resources=sardine.list(getUrl(), 0);
+		if (resources.isEmpty()) throw new FileSystemException("vfs.provider/get-attributes.error", this);
+		if (resources.size()>1) throw new FileSystemException("vfs.provider/get-attributes.error", this);
+		
+		DavResource resource=resources.get(0);
+
+		return (Map)resource.getCustomProps(); // cast is valid (Map<String,String> is always compatible with Map<String,Object>)
+	}
+	
 	@Override
 	protected void doSetAttribute(String attrName, Object value) throws Exception {
 		Map<String, String> properties = new HashMap<String, String>(1);
