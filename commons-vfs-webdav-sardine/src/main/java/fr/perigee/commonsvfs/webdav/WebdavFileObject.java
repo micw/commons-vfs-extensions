@@ -17,6 +17,7 @@ import org.apache.commons.vfs2.NameScope;
 import org.apache.commons.vfs2.provider.AbstractFileName;
 import org.apache.commons.vfs2.provider.AbstractFileObject;
 import org.apache.commons.vfs2.provider.AbstractFileSystem;
+import org.apache.commons.vfs2.provider.UriParser;
 import org.apache.commons.vfs2.util.FileObjectUtils;
 import org.apache.commons.vfs2.util.MonitorOutputStream;
 
@@ -110,8 +111,13 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 			List<String> children = new LinkedList<String>();
 			String url=getUrl();
 			for(DavResource res : resources) {
-				if(!res.getHref().equals(url)) {
-					children.add(res.getHref().toString());
+				
+				String childUrl=res.getHref().toString();
+				StringBuilder childUrlSb=new StringBuilder(childUrl);
+				UriParser.normalisePath(childUrlSb);
+				String childUrlNormalized=childUrlSb.toString();
+				if(url.equals(childUrlNormalized)) { // compare normalized URLs
+					children.add(childUrl); // but use the non-normalized URL because the trailing slash is used to determine the type (file/folder)
 				}
 			}
 			return children.toArray(new String[children.size()]);
@@ -119,23 +125,6 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 			return null;
 		}
 	}
-    
-    @Override
-    protected FileObject[] doListChildrenResolved() throws Exception {
-		List<DavResource> resources = sardine.list(getUrl());
-		List<WebdavFileObject> children = new ArrayList<WebdavFileObject>();
-		String url=getUrl();
-		for(DavResource res : resources) {
-			if(!res.getHref().equals(url)) {
-                WebdavFileObject fo = (WebdavFileObject) FileObjectUtils.getAbstractFileObject(
-                		getFileSystem().resolveFile(getFileSystem().getFileSystemManager().resolveName(
-                				getName(), res.getName(), NameScope.CHILD)));
-				children.add(fo);
-			}
-		}
-		return children.toArray(new FileObject[children.size()]);
-    }
-	
 
 	@Override
 	protected long doGetContentSize() throws Exception {
