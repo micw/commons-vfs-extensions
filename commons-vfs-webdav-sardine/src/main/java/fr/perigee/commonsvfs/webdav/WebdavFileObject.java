@@ -192,7 +192,12 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
             user = name.getUserName();
             password = name.getPassword();
         }
-        URLFileName newFile = new URLFileName("http", name.getHostName(), name.getPort(),
+        
+        String scheme;
+        if ("webdavs".equalsIgnoreCase(name.getScheme())) scheme="https";
+        else scheme="http";
+        
+        URLFileName newFile = new URLFileName(scheme, name.getHostName(), name.getPort(),
                 name.getDefaultPort(), user, password,
                 name.getPath(), name.getType(), name.getQueryString());
         try
