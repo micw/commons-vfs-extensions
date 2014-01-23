@@ -7,11 +7,24 @@ Want to integrate that in your commons-vfs installation ?
 
 Simple !
 
-Insert (and create, if it is not yet the case) a vfs-providers.xml file containing at least
+Insert (and create, if it is not yet the case) a META-INF/vfs-providers.xml file containing at least
 
 	<provider
 		class-name="fr.perigee.commonsvfs.webdav.WebdavFileProvider">
 		<scheme name="webdav" />
+		<scheme name="webdavs" />
 	</provider>
 
 And make sure CommonsVFS is loaded with this configuration file, and it will work.
+
+
+Or configure it programmatically:
+
+	StandardFileSystemManager fsManager = (StandardFileSystemManager) VFS.getManager();
+	fsManager.addProvider("webdav", new fr.perigee.commonsvfs.webdav.WebdavFileProvider());
+	fsManager.addProvider("webdavs", new fr.perigee.commonsvfs.webdav.WebdavFileProvider());
+
+Use it:
+
+	String url="webdavs://"+URLEncoder.encode(siteLogin)+"x:"+URLEncoder.encode(sitePasswd)+"@"+siteHost+resourcePath;
+	FileObject fo=fsManager.resolveFile(url);
