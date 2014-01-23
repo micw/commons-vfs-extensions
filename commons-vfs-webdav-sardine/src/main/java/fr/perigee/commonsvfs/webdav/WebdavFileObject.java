@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.Map;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileType;
+import org.apache.commons.vfs2.NameScope;
 import org.apache.commons.vfs2.provider.AbstractFileName;
 import org.apache.commons.vfs2.provider.AbstractFileObject;
 import org.apache.commons.vfs2.provider.AbstractFileSystem;
+import org.apache.commons.vfs2.util.FileObjectUtils;
 import org.apache.commons.vfs2.util.MonitorOutputStream;
 
 import com.github.sardine.DavResource;
@@ -105,8 +108,9 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 		if(getType()==FileType.FOLDER) {
 			List<DavResource> resources = sardine.list(getUrl());
 			List<String> children = new LinkedList<String>();
+			String url=getUrl();
 			for(DavResource res : resources) {
-				if(!res.getHref().equals(getUrl())) {
+				if(!res.getHref().equals(url)) {
 					children.add(res.getHref().toString());
 				}
 			}
@@ -115,6 +119,23 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 			return null;
 		}
 	}
+    
+    @Override
+    protected FileObject[] doListChildrenResolved() throws Exception {
+		List<DavResource> resources = sardine.list(getUrl());
+		List<WebdavFileObject> children = new ArrayList<WebdavFileObject>();
+		String url=getUrl();
+		for(DavResource res : resources) {
+			if(!res.getHref().equals(url)) {
+                WebdavFileObject fo = (WebdavFileObject) FileObjectUtils.getAbstractFileObject(
+                		getFileSystem().resolveFile(getFileSystem().getFileSystemManager().resolveName(
+                				getName(), res.getName(), NameScope.CHILD)));
+				children.add(fo);
+			}
+		}
+		return children.toArray(new FileObject[children.size()]);
+    }
+	
 
 	@Override
 	protected long doGetContentSize() throws Exception {
@@ -179,6 +200,7 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
 	}
 
 	public String getUrl() {
+		// should this be cached?
 		return urlString(getName());
 	}
 
@@ -222,4 +244,5 @@ public class WebdavFileObject extends AbstractFileObject implements FileObject {
             return name.getURI();
         }
     }
+    
 }
