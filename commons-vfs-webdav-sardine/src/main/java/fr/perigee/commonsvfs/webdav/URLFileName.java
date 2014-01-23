@@ -1,8 +1,6 @@
 package fr.perigee.commonsvfs.webdav;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import javax.print.URIException;
 
 import org.apache.commons.vfs2.FileName;
 import org.apache.commons.vfs2.FileSystemException;

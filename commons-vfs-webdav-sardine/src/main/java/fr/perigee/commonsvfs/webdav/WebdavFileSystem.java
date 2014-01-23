@@ -9,9 +9,8 @@ import org.apache.commons.vfs2.FileSystem;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.AbstractFileName;
 import org.apache.commons.vfs2.provider.AbstractFileSystem;
-import org.apache.commons.vfs2.provider.http.HttpFileProvider;
 
-import com.googlecode.sardine.Sardine;
+import com.github.sardine.Sardine;
 
 public class WebdavFileSystem extends AbstractFileSystem implements FileSystem {
 

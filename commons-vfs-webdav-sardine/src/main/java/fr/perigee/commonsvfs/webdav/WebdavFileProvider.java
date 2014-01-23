@@ -1,6 +1,5 @@
 package fr.perigee.commonsvfs.webdav;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,9 +16,8 @@ import org.apache.commons.vfs2.provider.AbstractOriginatingFileProvider;
 import org.apache.commons.vfs2.util.UserAuthenticatorUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.googlecode.sardine.Sardine;
-import com.googlecode.sardine.SardineFactory;
-import com.googlecode.sardine.impl.SardineImpl;
+import com.github.sardine.Sardine;
+import com.github.sardine.SardineFactory;
 
 /**
  * Sardine-backed Webdav file provider
