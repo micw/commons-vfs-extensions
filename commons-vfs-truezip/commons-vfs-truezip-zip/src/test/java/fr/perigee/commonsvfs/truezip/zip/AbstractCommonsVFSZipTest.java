@@ -6,7 +6,10 @@ import java.net.URISyntaxException;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
+import org.junit.After;
 import org.junit.BeforeClass;
+
+import de.schlichtherle.truezip.file.TVFS;
 
 public abstract class AbstractCommonsVFSZipTest {
 
@@ -15,6 +18,17 @@ public abstract class AbstractCommonsVFSZipTest {
 	@BeforeClass
 	public static void loadManager() throws FileSystemException {
 		manager = TestUtils.createFileSystemManager();
+	}
+	@After
+	public void cleanup() {
+		try
+		{
+			TVFS.umount(); // Close all open ZIP files!
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 
 	protected static FileObject getFileObject(FileSystemManager manager) throws URISyntaxException, FileSystemException {
